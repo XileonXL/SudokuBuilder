@@ -3,7 +3,7 @@
 #include "sudokuWidget.h"
 
 SudokuWidget::SudokuWidget(QWidget *parent) : QWidget(parent) {
-    setFixedSize(400, 400); // Tamaño de la ventana
+    setFixedSize(400, 400);
     createSudokuGrid();
 }
 
