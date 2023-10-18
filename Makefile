@@ -1,40 +1,48 @@
-# Compiler
+# Makefile para compilar un proyecto de Qt5 en C++
+# Asegúrate de que Qt5 esté instalado en tu sistema.
+
+# Directorios
+SRC_DIR = src
+INCLUDE_DIR = include
+BUILD_DIR = build
+MOC_DIR = moc
+
+# Compilador y opciones
 CXX = g++
-
-# Compiler flags
-CXXFLAGS = -std=c++11 -Wall
-
-# Qt flags and libraries
+MOC = moc
+CXXFLAGS = -std=c++11 -Wall -fPIC
 QT_CXXFLAGS = $(shell pkg-config --cflags Qt5Widgets)
 QT_LIBS = $(shell pkg-config --libs Qt5Widgets)
+QT_INCLUDE = -I/usr/include/qt
 
-# Target executable
-TARGET = sudoku_app
+# Archivos de origen y objetos
+SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
+MOC_SOURCES = $(wildcard $(INCLUDE_DIR)/*.h)
+OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SOURCES))
+MOC_OBJECTS = $(patsubst $(INCLUDE_DIR)/%.h, $(MOC_DIR)/moc_%.cpp, $(MOC_SOURCES))
 
-# QT generated files directory
-QT_DIR = qt_utils
+# Ejecutable
+TARGET = SudokuBuilder
 
-# Source files
-SOURCES = main.cpp sudokuWidget.cpp
-MOC_SOURCES = $(QT_DIR)/moc_sudokuWidget.cpp
+all: $(BUILD_DIR) $(MOC_DIR) $(TARGET)
 
-# Object files
-OBJECTS = $(SOURCES:.cpp=.o) $(MOC_SOURCES:.cpp=.o)
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
+$(MOC_DIR):
+	mkdir -p $(MOC_DIR)
 
-.PHONY: all clean
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $(QT_CXXFLAGS) $(QT_INCLUDE) -I$(INCLUDE_DIR) -o $@ -c $<
 
-all: $(TARGET)
+$(MOC_DIR)/moc_%.cpp: $(INCLUDE_DIR)/%.h
+	$(MOC) $< -o $@
 
-$(TARGET): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS) $(QT_LIBS)
-.cpp.o:
-	$(CXX) $(CXXFLAGS) $(QT_CXXFLAGS) -c $< -o $@
-
-$(QT_DIR)/moc_sudokuWidget.cpp: sudokuWidget.h
-	mkdir -p $(QT_DIR)
-	moc $< -o $@
+$(TARGET): $(OBJECTS) $(MOC_OBJECTS)
+	$(CXX) $(CXXFLAGS) $(QT_CXXFLAGS) -o $@ $^ $(QT_LIBS)
 
 clean:
-	rm -rf $(OBJECTS) $(TARGET) $(QT_DIR)
+	rm -rf $(BUILD_DIR) $(MOC_DIR) $(TARGET)
+
+.PHONY: all clean
 
