@@ -32,6 +32,7 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(QT_CXXFLAGS) -c $< -o $@
 
 $(QT_DIR)/moc_sudokuWidget.cpp: sudokuWidget.h
+	mkdir -p $(QT_DIR)
 	moc $< -o $@
 
 clean:
