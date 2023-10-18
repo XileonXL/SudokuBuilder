@@ -1,5 +1,3 @@
-// sudokuWidget.cpp
-
 #include "sudokuWidget.h"
 
 SudokuWidget::SudokuWidget(QWidget *parent) : QWidget(parent) {
@@ -23,17 +21,7 @@ void SudokuWidget::createSudokuGrid() {
         }
     }
 
-    std::vector<std::vector<int>> initialSudoku = {
-        {5, 3, 0, 0, 7, 0, 0, 0, 0},
-        {6, 0, 0, 1, 9, 5, 0, 0, 0},
-        {0, 9, 8, 0, 0, 0, 0, 6, 0},
-        {8, 0, 0, 0, 6, 0, 0, 0, 3},
-        {4, 0, 0, 8, 0, 3, 0, 0, 1},
-        {7, 0, 0, 0, 2, 0, 0, 0, 6},
-        {0, 6, 0, 0, 0, 0, 2, 8, 0},
-        {0, 0, 0, 4, 1, 9, 0, 0, 5},
-        {0, 0, 0, 0, 8, 0, 0, 7, 9}
-    };
+    std::vector<std::vector<int>> initialSudoku = generateInitialSudoku();
 
     int cellIndex = 0;
     for (int i = 0; i < 9; ++i) {
@@ -48,3 +36,34 @@ void SudokuWidget::createSudokuGrid() {
 
     setLayout(gridLayout);
 }
+
+std::vector<std::vector<int>> SudokuWidget::generateInitialSudoku() {
+    std::vector<std::vector<int>> voidSudoku = {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0}
+    };
+
+    return voidSudoku;
+}
+
+bool SudokuWidget::checkGrid(std::vector<std::vector<int>> grid) {
+    bool isGridFull = true;
+    for (int i = 0; i < 9 && isGridFull; ++i) {
+        for (int j = 0; j < 9 && isGridFull; ++j) {
+            if (grid[i][j] == 0) {
+                isGridFull = false;
+            }
+        }
+    }
+
+    return isGridFull;
+}
+
+
